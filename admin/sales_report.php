@@ -16,11 +16,9 @@ $total_quantity = 0;
 $total_revenue = 0;
 
 if ($selected_year && $selected_month) {
-    // Calculate first and last day of selected month
     $start_date = "$selected_year-$selected_month-01 00:00:00";
     $end_date = date("Y-m-t 23:59:59", strtotime($start_date));
     
-    // Query electronics sales for the selected month
     $stmt = mysqli_prepare($conn, "
         SELECT oi.product_name, SUM(oi.quantity) as total_qty, SUM(oi.price * oi.quantity) as total_amount
         FROM order_items oi
@@ -41,7 +39,29 @@ if ($selected_year && $selected_month) {
     mysqli_stmt_close($stmt);
 }
 
-// Get available years for dropdown (from orders table)
+// --- EXPORT TO EXCEL (CSV) ---
+if (isset($_GET['export']) && $_GET['export'] === 'excel' && !empty($report_data)) {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="sales_report_' . $selected_year . '_' . $selected_month . '.csv"');
+    
+    $output = fopen('php://output', 'w');
+    fputcsv($output, [__('product'), __('quantity_sold'), __('revenue')]);
+    
+    foreach ($report_data as $item) {
+        fputcsv($output, [
+            $item['product_name'],
+            $item['total_qty'],
+            '$' . number_format($item['total_amount'], 2)
+        ]);
+    }
+    fputcsv($output, []);
+    fputcsv($output, [__('total_items_sold'), $total_quantity, __('total_revenue') . ': $' . number_format($total_revenue, 2)]);
+    
+    fclose($output);
+    exit;
+}
+
+// Get available years for dropdown
 $years = [];
 $yearQuery = "SELECT DISTINCT YEAR(order_date) as yr FROM orders ORDER BY yr DESC";
 $yearResult = mysqli_query($conn, $yearQuery);
@@ -166,6 +186,12 @@ while ($row = mysqli_fetch_assoc($yearResult)) {
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                </div>
+                <!-- Export Button -->
+                <div class="p-4 border-t border-[#2a2a30] bg-[#1f1f28] text-right">
+                    <a href="?year=<?= $selected_year ?>&month=<?= $selected_month ?>&export=excel" class="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg transition inline-flex items-center gap-2 btn-ripple">
+                        📎 <?= __('export_excel') ?>
+                    </a>
                 </div>
             </div>
         <?php elseif ($selected_year && $selected_month): ?>

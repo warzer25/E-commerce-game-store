@@ -445,5 +445,6 @@ return [
 'view_electronics_sales' => 'فرۆشتنی ئەلیکترۆنی بەپێی مانگ ببینە',
 'generate' => 'دروستکردن',
 'back_to_dashboard' => 'گەڕانەوە بۆ داشبۆرد',
+'export_excel' => 'هەناردن بۆ Excel',
 ];
 ?>

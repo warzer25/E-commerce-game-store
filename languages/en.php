@@ -470,6 +470,6 @@ and accessories for the ultimate setup.',
 'view_electronics_sales' => 'View electronics sales by month',
 'generate' => 'Generate',
 'back_to_dashboard' => 'Back to Dashboard',
-
+'export_excel' => 'Export to Excel',
 ];
 ?>
