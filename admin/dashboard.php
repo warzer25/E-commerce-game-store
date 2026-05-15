@@ -230,6 +230,17 @@ if ($result) {
         <div class="mt-6 text-center fade-up">
             <a href="users.php" class="inline-block bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg transition btn-ripple">👥 <?= __('manage_all_users') ?></a>
         </div>
+        <div class="stat-card rounded-xl p-5">
+    <div class="flex items-center justify-between">
+        <div>
+            <p class="text-gray-400 text-sm"><?= __('monthly_sales_report') ?></p>
+            <p class="text-sm text-gray-500 mt-1"><?= __('view_electronics_sales') ?></p>
+        </div>
+        <a href="sales_report.php" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+            📊 <?= __('generate') ?>
+        </a>
+    </div>
+</div>
     </main>
 
     <footer class="border-t border-[#2a2a30] mt-12 py-6 text-center text-gray-500 text-sm">
