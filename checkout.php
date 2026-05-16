@@ -8,6 +8,23 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$payment_id = isset($_GET['payment_id']) ? (int)$_GET['payment_id'] : 0;
+if (!$payment_id) {
+    header("Location: cart.php");
+    exit;
+}
+
+// Verify payment belongs to user and is not yet linked to an order
+$checkPayment = mysqli_prepare($conn, "SELECT payment_id FROM payment_info WHERE payment_id = ? AND user_id = ? AND order_id IS NULL");
+mysqli_stmt_bind_param($checkPayment, "ii", $payment_id, $_SESSION['user_id']);
+mysqli_stmt_execute($checkPayment);
+$paymentCheck = mysqli_stmt_get_result($checkPayment);
+if (!mysqli_fetch_assoc($paymentCheck)) {
+    header("Location: cart.php");
+    exit;
+}
+mysqli_stmt_close($checkPayment);
+
 $user_id = $_SESSION['user_id'];
 $message = '';
 $messageClass = '';
@@ -38,7 +55,6 @@ if (!empty($_SESSION['cart'])) {
             break;
         }
         
-        // Check if already owned
         $checkOwn = mysqli_prepare($conn, "SELECT id FROM user_inventory WHERE user_id = ? AND game_id = ?");
         mysqli_stmt_bind_param($checkOwn, "ii", $user_id, $game_id);
         mysqli_stmt_execute($checkOwn);
@@ -61,21 +77,24 @@ if (!empty($_SESSION['cart'])) {
     }
     
     if (!$error && !empty($itemsToInsert)) {
-        // Insert order
         $orderStmt = mysqli_prepare($conn, "INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, 'completed')");
         mysqli_stmt_bind_param($orderStmt, "id", $user_id, $totalAmount);
         if (mysqli_stmt_execute($orderStmt)) {
             $order_id = mysqli_insert_id($conn);
             mysqli_stmt_close($orderStmt);
             
+            // Update payment_info with order_id
+            $updatePayment = mysqli_prepare($conn, "UPDATE payment_info SET order_id = ? WHERE payment_id = ?");
+            mysqli_stmt_bind_param($updatePayment, "ii", $order_id, $payment_id);
+            mysqli_stmt_execute($updatePayment);
+            mysqli_stmt_close($updatePayment);
+            
             foreach ($itemsToInsert as $item) {
-                // Order item
                 $itemStmt = mysqli_prepare($conn, "INSERT INTO order_items (order_id, product_type, product_id, product_name, quantity, price) VALUES (?, ?, ?, ?, ?, ?)");
                 mysqli_stmt_bind_param($itemStmt, "isissd", $order_id, $item['type'], $item['id'], $item['name'], $item['qty'], $item['price']);
                 mysqli_stmt_execute($itemStmt);
                 mysqli_stmt_close($itemStmt);
                 
-                // User inventory
                 $invStmt = mysqli_prepare($conn, "INSERT INTO user_inventory (user_id, game_id) VALUES (?, ?)");
                 mysqli_stmt_bind_param($invStmt, "ii", $user_id, $item['id']);
                 mysqli_stmt_execute($invStmt);

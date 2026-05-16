@@ -167,9 +167,7 @@ $cartCount = count($_SESSION['cart']);
                     </div>
                     <div class="flex gap-3">
                         <a href="index.php" class="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-md transition transform hover:scale-105 btn-ripple">← <?= __('continue_shopping') ?></a>
-                        <form method="POST" action="checkout.php">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded-md transition transform hover:scale-105 btn-ripple"><?= __('proceed_checkout') ?></button>
-                        </form>
+                        <a href="payment.php?type=games" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded-md transition"><?= __('proceed_checkout') ?></a>
                     </div>
                 </div>
             <?php endif; ?>

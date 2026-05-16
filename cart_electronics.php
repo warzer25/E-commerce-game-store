@@ -150,8 +150,7 @@ $cartCount = count($_SESSION['electronics_cart']);
                     <div class="flex gap-3">
                         <a href="electronics.php" class="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-md transition transform hover:scale-105 btn-ripple">← <?= __('continue_shopping') ?></a>
                         <form method="POST" action="checkout_electronics.php">
-                            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-2 rounded-md transition transform hover:scale-105 btn-ripple"><?= __('proceed_checkout') ?></button>
-                        </form>
+                            <a href="payment.php?type=electronics" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-2 rounded-md transition transform hover:scale-105 btn-ripple"><?= __('proceed_checkout') ?></a></form>
                     </div>
                 </div>
             <?php endif; ?>

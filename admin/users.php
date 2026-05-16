@@ -182,6 +182,10 @@ mysqli_stmt_close($fetchStmt);
                 <?php if ($_SESSION['role'] === 'admin'): ?>
                     <a href="users.php" class="text-cyan-400 font-semibold"><?= __('admin_panel') ?></a>
                     <a href="../insertelectronics.php" class="text-white hover:text-cyan-400 transition"><?= __('add_electronics') ?></a>
+                    
+                <?php endif; ?>
+                <?php if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'admin'): ?>
+                    <a href="dashboard.php" class="text-cyan-400 font-semibold"><?= __('dashboard') ?></a>
                 <?php endif; ?>
                 <a href="../cart.php" class="text-white hover:text-cyan-400 transition"><?= __('cart') ?></a>
                 <a href="../profile.php" class="text-white hover:text-cyan-400 transition"><?= __('profile') ?></a>
